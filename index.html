@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clousers</title>
+    <style>
+        input{
+            margin: auto;
+            height: 50px;
+            width: 50%;
+            margin-left: 22%;
+            box-sizing: border-box;
+            border-radius: 20px;
+            font-size: 20px;
+            text-align: center;
+            box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+            border: none;
+
+        }
+        #movies{
+            margin-top: 50px;
+            border: 1ppx solid red;
+    
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            grid-template-rows: auto;
+            gap: 10px;
+            justify-content: center;
+        }
+        #movies>div{
+            height:auto;
+            width: 100%;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+        
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap');
+        *{
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <input oninput="debounceFunction(main,1000)" type="text" id="query">
+    <div id="movies">
+
+    </div>
+</body>
+</html>
+<script>
+
+
+let id;
+ async function searchMovies(q){
+    
+    try{
+        let url=`https://omdbapi.com/?s=${q}&apikey=a0885521`
+    let res=await fetch(url)
+    let data=await res.json();
+    return data.Search
+    }catch(err){
+        console.log(err)
+
+    }
+
+
+
+}
+let movies_div=document.getElementById("movies")
+function  appndMobvies(movies){
+    movies_div.innerHTML=null
+    if(movies==undefined){
+        return false
+    }
+    movies.forEach(function(el){
+        let div=document.createElement("div")
+
+        
+        let image = document.createElement("img");
+          image.src = el.Poster;
+        let tittle = document.createElement("h1");
+          tittle.innerText = `Title: ${el.Title}`;
+          let release=document.createElement("p");
+          release.innerText= `Released Date:${el.Year}`;
+        div.append(image,tittle,release)
+        movies_div.append(div)
+    })
+
+}
+
+        async function main(){
+            let query=document.getElementById("query").value
+           let response= searchMovies(query)  //searchmovies returning a promise,async function always return a promise;
+        //    console.log(x)
+        let data=await response;
+        
+        appndMobvies(data)
+
+        // console.log(data)
+     
+
+            
+        }
+        function debounceFunction(func,delay){
+            if(id){
+                clearTimeout(id)
+            }
+           id= setTimeout(function(){
+                func();
+            },delay)
+
+
+
+
+        }
+
+</script>
